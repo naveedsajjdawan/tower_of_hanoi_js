@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tower of Jihhad</title>
+  <style>
+    .flex {
+      display: flex;
+    }
+
+    .container {
+      height: 400px;
+      margin-inline: 5vw;
+    }
+
+    .pole {
+      flex: 0 0 30vw;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    #pole1 {
+      background-color: red;
+    }
+
+    #pole2 {
+      background-color: green;
+    }
+
+    #pole3 {
+      background-color: blue;
+    }
+
+    .disk {
+      background-color: var(--bg-color);
+      border-radius: 10px;
+      height: 35px;
+      margin-inline: auto;
+      width: calc(var(--width) * 50px);
+
+    }
+
+    #moves {
+      text-align: center;
+      padding-bottom: 30px;
+      padding-top: 50px;
+    }
+
+    #counter {
+      width: 40px;
+      height: 22px;
+      border-radius: 10px;
+    }
+
+    #space {
+      margin-left: 10px;
+    }
+
+    #win {
+      text-align: center;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="moves"></div>
+  <div class="flex container">
+    <div class="flex pole" id="pole1" ondrop="drop(event)" ondragover="allowDrop(event)">
+      <div class="disk" style="--width: 1; --bg-color: yellow" id="disk1" data-size="1" draggable="true"
+        ondragstart="drag(event)"></div>
+      <div class="disk" style="--width: 2; --bg-color: gray" id="disk2" data-size="2" draggable="true"
+        ondragstart="drag(event)"></div>
+      <div class="disk" style="--width: 3; --bg-color: purple" id="disk3" data-size="3" draggable="true"
+        ondragstart="drag(event)"></div>
+      <div class="disk" style="--width: 4; --bg-color: white" id="disk4" data-size="4" draggable="true"
+        ondragstart="drag(event)"></div>
+    </div>
+    <div class="flex pole" id="pole2" ondrop="drop(event)" ondragover="allowDrop(event)">
+    </div>
+    <div class="flex pole" id="pole3" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+  </div>
+  <div id="Win"></div>
+
+  <script type="text/javascript">
+    let counter = 0;
+
+    function allowDrop(ev) {
+      ev.preventDefault();
+    }
+
+    function drag(ev) {
+      let target = ev.target;
+      ev.dataTransfer.setData("disk", target.id);
+      let pole_from_dragged_children = target.parentNode.children;
+      if (target !== pole_from_dragged_children[0]) {
+        ev.preventDefault()
+      }
+    }
+
+
+    function drop(ev) {
+      ev.preventDefault();
+      //get data of disk
+      let disk_dragged_id = ev.dataTransfer.getData("disk");
+      let disk_dragged = document.getElementById(disk_dragged_id);
+      let pole_to_dragged = document.getElementById(ev.currentTarget.id);
+      let pole_to_dragged_children = document.getElementById(ev.currentTarget.id).children;
+
+
+      if (pole_to_dragged_children.length == 0) {
+        prependDisk(pole_to_dragged, disk_dragged_id, moves);
+      } else {
+        if (parseInt(disk_dragged.dataset.size) < parseInt(pole_to_dragged_children[0].dataset.size)) {
+          prependDisk(pole_to_dragged, disk_dragged_id, moves);
+        }
+        else {
+          console.log("disk is greater");
+          return false;
+          //counter++
+          // document.getElementById("moves").innerHTML = "Moves: " + counter;
+        }
+      }
+      if (pole_to_dragged.id == "pole3" && pole_to_dragged_children.length == 4) {
+        //console.log("u win");
+        document.getElementById("Win").innerHTML = "You win";
+      }
+    }
+    function prependDisk(pole, disk_id) {
+      pole.prepend(document.getElementById(disk_id));
+      counter++
+      document.getElementById("moves").innerHTML = "Moves: " + counter;
+    }
+
+  </script>
+</body>
+
+</html>
